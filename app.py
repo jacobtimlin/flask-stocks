@@ -39,7 +39,7 @@ def index():
         session['start_date'] = start_date
         session['end_date'] = end_date
 
-        if validate_inputs(symbol, chart_type, time_series_type, start_date, end_date):
+        if check_inputs(symbol, chart_type, time_series_type, start_date, end_date):
             try:
                 stock_service = StockService(app.api_key)
                 start_date = datetime.strptime(start_date, '%Y-%m-%d')
@@ -55,23 +55,23 @@ def index():
                 return redirect(url_for('index'))
     return render_template('index.html', stocks=app.stocks, charts=app.charts, timeseries=app.timeseries, chart=chart)
 
-def validate_inputs(symbol, chart_type, time_series_type, start_date, end_date):
-    valid = True
+def check_inputs(symbol, chart_type, time_series_type, start_date, end_date):
+    check = True
 
     #check if all selections are valid
     if not symbol or symbol not in [stock.symbol for stock in app.stocks]:
         flash('Must have symbol')
-        valid = False
+        check = False
     if not chart_type or chart_type not in app.charts:
         flash("Must have chart type")
-        valid = False
+        check = False
     if not time_series_type or time_series_type not in app.timeseries:
         flash('Must have time series')
-        valid = False
+        check = False
     if not start_date or not end_date:
         flash('Must have a start and end date')
-        valid = False
-    return valid
+        check = False
+    return check
 
 
 
